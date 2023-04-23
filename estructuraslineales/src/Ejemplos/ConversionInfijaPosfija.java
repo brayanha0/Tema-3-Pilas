@@ -1,15 +1,27 @@
 package Ejemplos;
+
 import java.util.Stack;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 public class ConversionInfijaPosfija {
     public static void main(String[] args) {
-        String infija = JOptionPane.showInputDialog(null, "Ingrese una expresiÛn infija:");
+        String infija = JOptionPane.showInputDialog(null, "Ingrese una expresi√≥n infija:");
         String posfija = "";
         Stack<Character> pila = new Stack<Character>();
         int longitud = infija.length();
+        DefaultTableModel modelo = new DefaultTableModel();
+        modelo.addColumn("Car√°cter");
+        modelo.addColumn("Estado actual de la pila");
+        modelo.addColumn("Expresi√≥n posfija");
         for (int i = 0; i < longitud; i++) {
             char caracter = infija.charAt(i);
+            String estadoPila = "";
+            for (Character c : pila) {
+                estadoPila += c;
+            }
             if (caracter == '(') {
                 pila.push(caracter);
             } else if (Character.isLetterOrDigit(caracter)) {
@@ -27,11 +39,15 @@ public class ConversionInfijaPosfija {
                 }
                 pila.push(caracter);
             }
+            modelo.addRow(new Object[] {caracter, estadoPila, posfija});
         }
         while (!pila.empty()) {
             posfija += pila.pop();
         }
-        JOptionPane.showMessageDialog(null, "ExpresiÛn infija: " + infija + "\nExpresiÛn posfija: " + posfija);
+        modelo.addRow(new Object[] {"", "", posfija});
+        JTable tabla = new JTable(modelo);
+        JScrollPane scroll = new JScrollPane(tabla);
+        JOptionPane.showMessageDialog(null, scroll, "Estados de la pila", JOptionPane.PLAIN_MESSAGE);
     }
 
     public static int obtenerPrecedencia(char operador) {
@@ -41,6 +57,7 @@ public class ConversionInfijaPosfija {
                 return 1;
             case '*':
             case '/':
+            case '%':
                 return 2;
             case '^':
                 return 3;
@@ -49,4 +66,5 @@ public class ConversionInfijaPosfija {
         }
     }
 }
+
 
